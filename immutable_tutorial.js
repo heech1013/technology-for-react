@@ -34,7 +34,7 @@ data1.getIn(['c', 'd']);
 
 // 새 값을 설정할 때는 set을 사용한다.
 const newData1 = data1.set('a', 4);
-// set을 한다고 해서 데이터가 실제로 변하는 것은 아니다. 주어진 변화를 적용한 새 Map을 만드는 것이다.
+// set을 한다고 해서 기존 객체의 데이터가 변하는 것은 아니다. 주어진 변화를 적용한 새 Map을 만드는 것이다.
 console.log(newData1 === data1);  // false
 
 // Map 내부에 또 Map이 존재하고, 그 Map 안에 있는 키 값을 수정할 때는 setIn을 사용한다.

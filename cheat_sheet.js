@@ -25,6 +25,9 @@
 // '/>'가 꼭 새 줄에 있어야 한다.
 />
 
+* 크롬 redux 개발자 도구
+: createStore(~, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
 /***************************************** props ********************************************/
 * props 전달 받기
 - 클래스형 컴포넌트일 때: this.props.~

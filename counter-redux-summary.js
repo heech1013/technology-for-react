@@ -43,4 +43,68 @@
 /* src - lib */
 : 일부 컴포넌트에서 함께 사용되는 함수들을 저장
 
+/* redux 모듈 */
+* bindActionCreators: mapDispatchToProps에서의 작업을 간단하게 해줌.
+  - 기존:
+    inputActions: {
+      setInput: (value) => dispatch(inputActions.setInput(value))
+    }
+  - 적용:
+    InputActions: bindActionCreators(inputActions, dispatch)
+  - 나중에 이를 호출할 때는, this.props.InputActions.setInput을 호출하면 된다.
+
+/* redux-actions 모듈 */
+* createActions: 액션 생성 함수
+  - 기존:
+    export const increment = (index) => ({
+      type: types.INCREMENT,
+      index
+    });
+  - 적용:
+    export const increment = createActions(types.INCREMENT);
+  - 파라미터 명시하는 방법:
+    export const setColor = createAction(types.SET_COlOR, ({index, color}) => ({index, color}));
+  - 파라미터: increment(3)
+      결과: {
+        type: 'INCREMENT',
+        payload: 3
+      }
+    여러 개일 때: increment({index: 5, color: 'red'});
+      결과: {
+        type: 'INCREMENT',
+        payload: {
+          index: 5,
+          color: 'red'
+        }
+      }
+
+* handleActions: 리듀서 간편 생성. 두번째 파라미터로 초기 상태(initialState)
+    const reducer = handleActions({
+      INCREMENT: (state, action) => ({
+      counter: state.counter + action.payload
+      })
+    }, {counter: 0})
+
+/* 리덕스 미들웨어 */
+: 액션을 디스패치했을 때, 리듀서에서 이를 처리하기 전에 사전에 지정된 작업들을 실행.
+* 미들웨어 적용: store 생성 시 applyMiddleware로 적용
+const store = createStore(modules, applyMiddleware(loggerMiddleware));
+
+/* 비동기 작업 미들웨어 */
+* redux-thunk
+  - thunk: 특정 작업을 나중에 할 수 있도록 미루려고 함수 형태로 감싼 것.
+  - 객체 뿐만 아니라, 함수도 디스패치할 수 있게 한다.
+  - thunk 생성 함수: dispatch와 getState를 파라미터로 가지는 새로운 함수를 만들어 반환.
+      export const incrementAysnc = () => dispatch => {
+        setTimeout(
+          () => { dispatch(increment()) },
+          1000
+        );
+      }
+      이렇게 하면, 나중에 store.dispatch(incrementAsync()) 했을 때(스토어에 액션을 디스패치할 때)
+      INCREMENT_COUNTER 액션을 1초 뒤에 디스패치한다.
+      (기존 CounterActions.increment를 CounterActions.incrementAsync로 수정)
+
+
+
 </Fragment>
