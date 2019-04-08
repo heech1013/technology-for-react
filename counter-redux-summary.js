@@ -95,16 +95,24 @@ const store = createStore(modules, applyMiddleware(loggerMiddleware));
   - thunk: 특정 작업을 나중에 할 수 있도록 미루려고 함수 형태로 감싼 것.
   - 객체 뿐만 아니라, 함수도 디스패치할 수 있게 한다.
   - thunk 생성 함수: dispatch와 getState를 파라미터로 가지는 새로운 함수를 만들어 반환.
-      export const incrementAysnc = () => dispatch => {
+      export const incrementAysnc = () => dispatch => {  // 1초 뒤에 액션이 디스패치되는 코드
         setTimeout(
           () => { dispatch(increment()) },
           1000
         );
       }
-      이렇게 하면, 나중에 store.dispatch(incrementAsync()) 했을 때(스토어에 액션을 디스패치할 때)
-      INCREMENT_COUNTER 액션을 1초 뒤에 디스패치한다.
-      (기존 CounterActions.increment를 CounterActions.incrementAsync로 수정)
-
+        // 이렇게 하면, 나중에 store.dispatch(incrementAsync()) 했을 때(스토어에 액션을 디스패치할 때)
+        // INCREMENT_COUNTER 액션을 1초 뒤에 디스패치한다.
+        //(기존 CounterActions.increment를 CounterActions.incrementAsync로 수정)
+      function incrementIfOdd() {  // 조건에 따라 액션을 디스패치하거나 무시하는 코드
+        return (dispatch, getState) => {
+          const { counter } = getState();  // 스토어 상태에도 접근할 수 있다.
+          if (counter % 2 === 0) {
+            return;
+          }
+          dispatch(increment());
+        };
+      }
 
 
 </Fragment>
