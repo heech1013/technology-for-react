@@ -28,6 +28,12 @@
 * 크롬 redux 개발자 도구
 : createStore(~, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
+* path 간략화
+  : cross-env 설치, package.json의 "script" 중
+  "start": "cross-env NODE_PATH=src react-scripts start",
+  "build": "cross-env NODE_PATH=src react-scripts build",
+  이렇게 하면 src 폴더 내부의 폴더/파일을 바로 불러올 수 있다. '/components/...'
+
 /***************************************** props ********************************************/
 * props 전달 받기
 - 클래스형 컴포넌트일 때: this.props.~
@@ -185,8 +191,68 @@ const Hello = ({name}) => {
   5. 녹화 중지 후 User Timing 확인
   6. shouldComponentUpdate
   
+/***************************************** 라우트로 사용된 컴포넌트가 전달받는 props ********************************************/
+* location: 현재 페이지의 주소 상태
+  {
+    "pathname": "/posts/3",
+    "search": "",  // 주로 search 값으로 URL Query를 읽는 데 사용하거나 주소가 바뀐 것을 감지하는 데 사용.
+    "hash": "",
+    "key": "xmsczi"
+  }
+  - 주소가 바뀐 것 감지하기:
+    componentDidUpdate(prevProps, prevState) {
+      if (prevProps.location !== this.props.location) {
+        // 주소가 바뀜
+      }
+    }
 
+* match: <Route/> 컴포넌트에서 설정한 path와 관련된 데이터들을 조회할 때 사용.
+         현재 URL이 같을지라도 다른 라우터에서 사용된 match는 다른 정보를 알려준다.
+         주로 params를 조회하거나 서브 라우트를 만들 때 현재 path를 참조하는 데 사용한다.
+    (Post.js)
+      const Post = ({location, match}) => {
+        console.log(match);
+      }
+    결과: {path:"/posts", url:"/posts", isExact:false, params:{...}}
+    
+    (Posts.js)
+      const Posts = ({match}) => {
+        console.log(match);
+      }
+    결과: {path:"/posts/:id", url:"/posts/3", isExact:true, params:{...}}
+  
+  * history: 현재 라우트를 조작할 때 사용 (뒤쪽 페이지로 넘어가거나, 다시 앞쪽 페이지로 가거나, 새로운 주소로 이동해야 할 때). 이 객체가 지닌 함수들을 호출
+      history: {...}
+        action: "POP"
+        block: block()
+        createHref: createHref()
+        go: go()
+        goForward: goForward()
+        length: 4
+        listen: listen()
+        location: {...}
+        push: push()
+        replace: replace() 
+        
+      - replace('/posts') 형식으로 작성.
+        push와 차이점은 페이지 방문 기록을 남기지 않아서 페이지 이동 후 뒤로가기 버튼을 눌렀을 때 방금 전의 페이지가 아니라
+        방금 전의 전 페이지가 나타난다.
+      - action: history의 상태를 알려준다. 페이지 처음 방문: POP / 링크를 통한 라우팅 또는 push를 통한 라우팅: PUSH / replace를 통한 라우팅: replace
+      - block: 페이지에서 벗어날 때, 사용자에게 정말 페이지를 떠나겠냐고 묻는 창을 띄운다.
+          const unblock = history.block('정말로 떠나시겠습니까?');
+          unblock();  // 막는 작업을 취소할 때.
+      - go, goBack, goForward: 이전 페이지 또는 다음 페이지로 이동하는 함수. go(-1)로 뒤로가기, go(1)로 다음으로 가기 가능.
 
+/***************************************** 라우트로 사용된 컴포넌트가 아닌 기타 컴포넌트에서 라우트 접근(withRouter) ********************************************/
+: 라우트로 사용된 컴포넌트가 아닌 기타 컴포넌트에서는 withRouter를 사용하여 위 세가지 props에 접근할 수 있다.
+
+  (src/components/Menu.js)
+  import { NavLink, withRouter } from 'react-router-dom';
+  ...
+  export default withRouter(Menu);
+
+  // withRouter를 사용한 컴포넌트에서 match 값은 현재 해당 컴포넌트가 위치한 상위 라우트의 정보이다.
+     주로 history에 접근하여 컴포넌트에서 라우터를 조작하는 데 사용한다.
 
 
 </Fragment>
