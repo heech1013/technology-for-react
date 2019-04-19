@@ -1,0 +1,6 @@
+// 컴포넌트 스타일을 작성할 때 유틸에 적용한 코드를 사용하려면 스타일 파일 위쪽에 다음 코드를 삽입하면 된다
+// @import 'utils';
+@import 'lib/all';
+
+// 반응형 디자인을 할 때 참조할 구간을 변수로 저장.
+$breakpoints: (small: 320px, medium: 768px, large: 1024px, wide:1400px);
