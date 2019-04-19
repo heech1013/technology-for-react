@@ -1,10 +1,14 @@
 import React from 'react';
+import PageTemplate from 'components/common/PageTemplate';
+import PostInfo from 'components/post/PostInfo/PostInfo.js';
+import PostBody from 'components/post/PostBody/PostBody.js';
 
 const PostPage = () => {
   return (
-    <div>
-      Post
-    </div>
+    <PageTemplate>
+      <PostInfo/>
+      <PostBody/>
+    </PageTemplate>
   );
 };
 

@@ -161,7 +161,7 @@ const Button = styled.button`
     props.inverted &&
     css`
       background: none;
-      &.hover {
+      &:hover {
         background: white;
       }
     `};
