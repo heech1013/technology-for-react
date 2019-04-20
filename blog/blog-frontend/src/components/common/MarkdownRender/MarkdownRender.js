@@ -44,6 +44,13 @@ class MarkdownRender extends Component {
     }
   }
 
+  /* 에디터에서 마크다운이 변경될 때는 하이라이팅을 제대로 호출하지만, 지금처럼 처음부터 마크다운 값이 있을 때는
+  componentWillMount 부분에서 마크다운 변환 작업이 일어나 html 상태가 바뀌어도 componentDidUpdate를 호출하지 않는다.
+  따라서 componentDidMount에서도 Prism.highlight를 호출하면 이 문제가 해결된다. */
+  componentDidMount() {
+    Prism.highlightAll();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     // markdown 값이 변경되면 renderMarkdown을 호출
     if (prevProps.markdown !== this.props.markdown) {

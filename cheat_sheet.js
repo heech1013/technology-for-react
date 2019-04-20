@@ -228,6 +228,7 @@ const Hello = ({name}) => {
         createHref: createHref()
         go: go()
         goForward: goForward()
+        goBack: goBack()
         length: 4
         listen: listen()
         location: {...}
