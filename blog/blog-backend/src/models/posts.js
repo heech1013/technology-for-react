@@ -5,7 +5,8 @@ const { Schema } = mongoose;
 const Post = new Schema({
   title: String,
   body: String,
-  pulishedDate: {
+  tags: [String],  // 문자열 배열
+  publishedDate: {
     type: Date,
     default: new Date()
   }

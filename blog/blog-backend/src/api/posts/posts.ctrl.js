@@ -45,11 +45,11 @@ exports.list = async (ctx) => {
   try {
     const posts = await Post.find()
       .sort({_id: -1})  // 역순(내림차순)으로 정렬한다.
-      .list(10)  // 열 개로 개수를 제한한다.
+      .limit(10)  // 열 개로 개수를 제한한다.
       .skip((page - 1) * 10)  // 파라미터의 수만큼을 건너뛰고 조회한다. 페이지에 따라 불러오는 게시물 조정
       .lean()  // 길이 제한 관련?
       .exec();  // find() 함수 호출 후 exec()를 붙여 주어야 서버에 쿼리를 요청한다. 
-    const postCount = await Post.countDocument().exec();  // 마지막 페이지 알려주기
+    const postCount = await Post.countDocuments().exec();  // 마지막 페이지 알려주기
     const limitBodyLength = post => ({  // 길이 200자 제한
       ...post,
       body: post.body.length < 200 ? post.body : `${post.body.slice(0, 200)}...`
