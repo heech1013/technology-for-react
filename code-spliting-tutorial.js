@@ -1,6 +1,0 @@
-<Fragment>
-
-
-
-
-</Fragment>

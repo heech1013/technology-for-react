@@ -2,6 +2,7 @@ const Post = require('models/posts');
 const Joi = require('joi');
 
 const { ObjectId } = require('mongoose').Types;
+
 exports.checkObjectId = (ctx, next) => {
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
@@ -10,6 +11,14 @@ exports.checkObjectId = (ctx, next) => {
   }
   return next();  // next를 리턴해야 ctx.body가 제대로 설정된다.
 };
+
+exports.checkLogin = (ctx, next) => {
+  if (!ctx.session.logged) {
+    ctx.status = 401;
+    return null;
+  }
+  return next();
+}
 
 
 exports.write = async (ctx) => {
@@ -37,13 +46,21 @@ exports.write = async (ctx) => {
 };
 
 exports.list = async (ctx) => {
+  // 페이지가 주어지지 않았다면 1로 간주
+  // query는 문자열 형태로 받아 오므로 숫자로 변환
   const page = parseInt(ctx.query.page || 1, 10);
+  const { tag } = ctx.query;
+
+  const query = tag ? {
+    tags: tag
+  } : {};  // find에 {tag: undefined}를 전달하면 아무 데이터도 나타나지 않는 이슈가 발생하므로, tag가 없을 땐 빈 객체를 전달
+
   if (page < 1) {
     ctx.status = 400;
     return ;
   }
   try {
-    const posts = await Post.find()
+    const posts = await Post.find(query)  // tags 배열에 tag를 가진 포스트 찾기
       .sort({_id: -1})  // 역순(내림차순)으로 정렬한다.
       .limit(10)  // 열 개로 개수를 제한한다.
       .skip((page - 1) * 10)  // 파라미터의 수만큼을 건너뛰고 조회한다. 페이지에 따라 불러오는 게시물 조정
