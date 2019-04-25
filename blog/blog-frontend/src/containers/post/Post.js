@@ -4,6 +4,8 @@ import PostBody from 'components/post/PostBody/PostBody.js';
 import * as postActions from 'store/modules/post';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import removeMd from 'remove-markdown';
+import { Helmet } from 'react-helmet';
 
 class Post extends Component {
   initialize = async () => {
@@ -28,6 +30,14 @@ class Post extends Component {
 
     return (
       <div>
+        {/* body 값이 있을 때만 helmet 설정. body가 null이면 오류가 발생하므로. */
+          body && (
+            <Helmet>
+              <title>{title}</title>
+              <meta name="description" content={removeMd(body).slice(0, 200)}/>
+            </Helmet>
+          )
+        }
         <PostInfo title={title} publisedDate={publisedDate} tags={tags}/>
         <PostBody body={body}/>
       </div>
